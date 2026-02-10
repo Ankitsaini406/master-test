@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "./nav.module.css";
+import styles from "@/src/styles/nav.module.css";
 
 export default function Navebar() {
     return (
@@ -7,14 +7,19 @@ export default function Navebar() {
             <div className='container'>
                 {/* Logo */}
                 <div className={styles.logo}>
-                    <Link href="/">Logo</Link>
+                    <Link href="/">mentor union</Link>
                 </div>
 
                 {/* Navigation Links */}
                 <div className={styles.links}>
                     <Link href="/">For Institutions</Link>
                     <Link href="/">Become a Mentor</Link>
-                    <button className={styles.loginBtn}>Login</button>
+                    <button className='pri-button'>Login
+                        <span className="icon-wrapper">
+                            <img src="/icons/arrow.svg" className="btn-icon icon1" />
+                            <img src="/icons/arrow.svg" className="btn-icon icon2" />
+                        </span>
+                    </button>
                 </div>
             </div>
         </nav>

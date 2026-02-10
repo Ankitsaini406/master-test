@@ -2,6 +2,9 @@
   /* Colors - Light Theme */
   --background: #ffffff;
   --foreground: #090909;
+  --gray: #E5E5E5;
+
+  --border: #D4D4D4;
 }
 
 /* ========================================
@@ -46,8 +49,19 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-a {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+}
+
+a,
+button {
   text-decoration: none;
+  cursor: pointer;
 }
 
 .container {
@@ -56,4 +70,70 @@ a {
   margin-right: auto;
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.pri-button,
+.sec-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 54px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.pri-button {
+  background-color: transparent;
+  border: 1px solid var(--background);
+  color: var(--background);
+
+  .btn-icon {
+    color: var(--background);
+  }
+}
+
+.sec-button {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 2px solid var(--border);
+  font-size: 16px;
+  line-height: 150%;
+}
+
+.icon-wrapper {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  overflow: hidden;
+}
+
+.btn-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.25s ease-in-out;
+}
+
+.icon1 {
+  transform: translateY(0%);
+}
+
+.icon2 {
+  transform: translate(-100%, 100%);
+}
+
+.pri-button:hover .icon1,
+.sec-button:hover .icon1 {
+  transform: translate(100%, -100%);
+}
+
+.pri-button:hover .icon2,
+.sec-button:hover .icon2 {
+  transform: translate(0%, 0%);
 }

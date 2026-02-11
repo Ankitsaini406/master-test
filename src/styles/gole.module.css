@@ -1,0 +1,159 @@
+.box {
+    position: relative;
+    background-color: var(--foreground);
+    color: var(--background);
+    width: 100%;
+    /* overflow: hidden; */
+}
+
+.marqueeWrapper {
+    position: absolute;
+    top: -12vh;
+    overflow: hidden;
+    width: 100%;
+}
+
+.marquee {
+    display: flex;
+    white-space: nowrap;
+    will-change: transform;
+}
+
+.marqueeItem {
+    display: inline-block;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 310px;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+    color: var(--gray-10);
+}
+
+.midbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+}
+
+.midbox h4 {
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 120%;
+    letter-spacing: 0px;
+
+    span {
+        font-size: 34px;
+        font-style: italic;
+    }
+}
+
+.gridBox {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding-top: 5rem;
+}
+
+.gridBox h3 {
+    background: linear-gradient(90deg, var(--liner1), var(--liner2), var(--liner3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 400;
+    letter-spacing: 0px;
+    line-height: 120%;
+    font-size: 50px;
+}
+
+.gridBox p {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 120%;
+    letter-spacing: 0px;
+    text-align: center;
+    color: var(--gray-60);
+}
+
+.gridBox>div {
+    padding: 2rem;
+    position: relative;
+    text-align: center;
+}
+
+.gridBox>div:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 10%;
+    right: 0;
+    width: 1px;
+    height: 80%;
+    background-color: #ccc;
+}
+
+/* Slider wrapper */
+.sliderWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 5rem;
+    position: relative;
+}
+
+/* Nav buttons */
+.navButton {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Slider container */
+.slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 80%;
+    overflow: hidden;
+    gap: -80px;
+    /* overlap */
+}
+
+/* Each slide */
+.slide {
+    transition: all 0.5s ease;
+    opacity: 0.5;
+    transform: scale(0.8);
+    z-index: 1;
+    position: relative;
+}
+
+.slide img {
+    width: 200px;
+    height: auto;
+    border-radius: 1rem;
+}
+
+/* Slides next to active */
+.slide.near {
+    opacity: 0.7;
+    transform: scale(1);
+    z-index: 2;
+}
+
+/* Active slide */
+.slide.active {
+    opacity: 1;
+    transform: scale(1.5);
+    z-index: 3;
+}
+
+/* Far slides */
+.slide.far {
+    opacity: 0.5;
+    transform: scale(0.8);
+    z-index: 0;
+}

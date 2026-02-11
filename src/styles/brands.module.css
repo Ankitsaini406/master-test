@@ -1,0 +1,75 @@
+.box {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    padding-top: 71px;
+}
+
+.grid {
+    display: grid;
+    padding-bottom: 71px;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 89px);
+    gap: 0;
+    perspective: 1000px;
+}
+
+/* Cube cell borders */
+.cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    overflow: visible;
+    perspective: 800px;
+}
+
+/* Remove top border for first row */
+.cell:nth-child(-n + 6) {
+    border-top: 0;
+}
+
+/* Remove left border for first column */
+.cell:nth-child(6n + 1) {
+    border-left: 0;
+}
+
+.cube {
+    width: 52px;
+    height: 52px;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg);
+    transition: transform 0.3s ease;
+}
+
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    backface-visibility: hidden;
+}
+
+/* Cube faces */
+.front {
+    transform: rotateY(0deg) translateZ(50px);
+}
+
+.back {
+    transform: rotateY(180deg) translateZ(50px);
+}
+
+.left {
+    transform: rotateY(-90deg) translateZ(50px);
+}
+
+.right {
+    transform: rotateY(90deg) translateZ(50px);
+}

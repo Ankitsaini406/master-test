@@ -1,159 +1,231 @@
+/* =========================
+   1. Main Container
+   ========================= */
 .box {
     position: relative;
     background-color: var(--foreground);
     color: var(--background);
     width: 100%;
-    /* overflow: hidden; */
 }
 
+/* =========================
+   2. Marquee (Background)
+   ========================= */
 .marqueeWrapper {
     position: absolute;
-    top: -12vh;
-    overflow: hidden;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    opacity: 0.05;
+    pointer-events: none;
 }
 
 .marquee {
     display: flex;
-    white-space: nowrap;
-    will-change: transform;
+    width: max-content;
+    /* Ensure it allows content to flow horizontally */
+}
+
+.marqueeGroup {
+    display: flex;
+    flex-shrink: 0;
 }
 
 .marqueeItem {
-    display: inline-block;
-    font-weight: 400;
+    font-weight: 700;
     font-style: italic;
-    font-size: 310px;
-    text-transform: uppercase;
-    letter-spacing: 0px;
-    color: var(--gray-10);
+    font-size: clamp(8rem, 15vw, 20rem);
+    /* Fluid font size */
+    line-height: 0.9;
+    color: var(--background);
+    white-space: nowrap;
+    padding-right: 0.2em;
 }
 
-.midbox {
+/* --- Grid Box --- */
+.gridBox {
+    padding-top: 4rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;   /* THIS centers last row automatically */
+    align-items: flex-start;
+}
+
+.gridItem {
+    flex: 0 0 220px; /* fixed card width */
+    padding: 2rem 1rem;
+    text-align: center;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 200px;
 }
 
-.midbox h4 {
-    font-weight: 400;
-    font-size: 30px;
-    line-height: 120%;
-    letter-spacing: 0px;
-
-    span {
-        font-size: 34px;
-        font-style: italic;
-    }
-}
-
-.gridBox {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    padding-top: 5rem;
-}
-
-.gridBox h3 {
-    background: linear-gradient(90deg, var(--liner1), var(--liner2), var(--liner3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 400;
-    letter-spacing: 0px;
-    line-height: 120%;
-    font-size: 50px;
-}
-
-.gridBox p {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 120%;
-    letter-spacing: 0px;
-    text-align: center;
-    color: var(--gray-60);
-}
-
-.gridBox>div {
-    padding: 2rem;
-    position: relative;
-    text-align: center;
-}
-
-.gridBox>div:not(:last-child)::after {
+/* Vertical Divider Lines */
+.gridItem:not(:last-child)::after {
     content: "";
     position: absolute;
-    top: 10%;
+    top: 20%;
     right: 0;
     width: 1px;
-    height: 80%;
-    background-color: #ccc;
+    height: 60%;
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Slider wrapper */
+.gridItem h3 {
+    /* Gradient Text */
+    background: linear-gradient(90deg, #39B5D7, #F7D544, #E38330);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+.gridItem p {
+    font-size: 1rem;
+    color: #9ca3af;
+    line-height: 1.4;
+}
+
+/* --- Text Box --- */
+.textBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8rem 1rem;
+}
+
+.textBox h4 {
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.2;
+}
+
+.textBox h4 span {
+    display: block;
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #9ca3af;
+    font-size: 0.9em;
+}
+
+/* =========================
+   4. Slider (Bottom)
+   ========================= */
 .sliderWrapper {
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+}
+
+.sliderTrack {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 5rem;
-    position: relative;
+    /* gap: 2rem; */
+    padding: 1rem 2rem;
 }
 
-/* Nav buttons */
-.navButton {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    z-index: 10;
-}
-
-/* Slider container */
-.slider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 80%;
-    overflow: hidden;
-    gap: -80px;
-    /* overlap */
-}
-
-/* Each slide */
 .slide {
-    transition: all 0.5s ease;
-    opacity: 0.5;
-    transform: scale(0.8);
-    z-index: 1;
     position: relative;
+    width: 350px;
+    height: 500px;
+    overflow: visible;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    flex-shrink: 0;
+    background-color: var(--foreground);
 }
 
 .slide img {
-    width: 200px;
-    height: auto;
-    border-radius: 1rem;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
 }
 
-/* Slides next to active */
+/* Active Slide Style */
+.active {
+    transform: scale(1.15);
+    z-index: 10;
+}
+
+.inactive::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
 .slide.near {
-    opacity: 0.7;
     transform: scale(1);
     z-index: 2;
 }
 
-/* Active slide */
-.slide.active {
-    opacity: 1;
-    transform: scale(1.5);
-    z-index: 3;
+.slide.far {
+    transform: scale(0.9);
+    z-index: 1;
 }
 
-/* Far slides */
-.slide.far {
-    opacity: 0.5;
-    transform: scale(0.8);
-    z-index: 0;
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 1024px) {
+
+    .gridBox {
+    padding-top: 0rem;
+    }
+
+    .gridItem {
+        flex: 0 0 200px;
+    }
+
+    .gridItem::after {
+        display: none;
+    }
+
+    .slide {
+        width: 280px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 770px) {
+    .gridItem {
+        flex: 0 0 160px;
+    }
+
+    .textBox {
+        padding: 4rem 1rem;
+    }
+
+    .sliderWrapper {
+        bottom: 0;
+        /* Reset bottom offset for mobile */
+    }
+
+    .slide {
+        width: 200px;
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gridItem {
+        flex: 0 0 100%;
+        max-width: 320px;
+    }
+
+    .gridBox {
+        justify-content: center;
+    }
 }

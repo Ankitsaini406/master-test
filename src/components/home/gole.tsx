@@ -3,87 +3,10 @@
 import { useState, useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 import style from "@/src/styles/gole.module.css";
+import Image from "next/image";
 
-// Main Component
 export default function GoleMentors() {
-    const marqueeRef = useRef<HTMLDivElement>(null);
-
-    useLayoutEffect(() => {
-        if (!marqueeRef.current) return;
-
-        const marquee = marqueeRef.current;
-        const totalWidth = marquee.scrollWidth / 2; // half because we duplicate
-        gsap.to(marquee, {
-            x: -totalWidth,
-            repeat: -1,
-            duration: 75,
-            ease: "none",
-        });
-    }, []);
-
-    return (
-        <section className={style.box}>
-            {/* Marquee */}
-            <div className={style.marqueeWrapper}>
-                <div ref={marqueeRef} className={style.marquee}>
-                    {[...Array(6)].map((_, i) => (
-                        <span key={i} className={style.marqueeItem}>
-                            MENTOR UNION
-                        </span>
-                    ))}
-                    {[...Array(6)].map((_, i) => (
-                        <span key={i + 6} className={style.marqueeItem}>
-                            MENTOR UNION
-                        </span>
-                    ))}
-                </div>
-            </div>
-
-            <div className="container">
-                {/* Midbox */}
-                <div className={style.midbox}>
-                    <div className={style.gridBox}>
-                        <div>
-                            <h3>1:1&nbsp;Access</h3>
-                            <p>no middle layers</p>
-                        </div>
-
-                        <div>
-                            <h3>94%</h3>
-                            <p>menters found unmatched clarity</p>
-                        </div>
-
-                        <div>
-                            <h3>650+</h3>
-                            <p>mentors, one <br /> platform</p>
-                        </div>
-
-                        <div>
-                            <h3>3 Calls</h3>
-                            <p>result in one breakthrough</p>
-                        </div>
-
-                        <div>
-                            <h3>14,000+</h3>
-                            <p>completed calls</p>
-                        </div>
-                    </div>
-
-                    <h4>
-                        Your Goals, Our Mentors <br /> <span>Let's Make it Happen</span>
-                    </h4>
-                </div>
-            </div>
-
-            {/* Slider */}
-            <Slider />
-        </section>
-    );
-}
-
-// Slider Component
-export function Slider() {
-    const images = [
+    const Images = [
         "/images/1.png",
         "/images/2.png",
         "/images/3.png",
@@ -91,43 +14,151 @@ export function Slider() {
         "/images/5.png",
     ];
 
-    const [activeIndex, setActiveIndex] = useState(2); // middle one active
+    const marqueeRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const prevSlide = () => {
-        setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-    };
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            if (marqueeRef.current) {
+                const marquee = marqueeRef.current;
+                const totalWidth = marquee.scrollWidth / 2;
 
-    const nextSlide = () => {
-        setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                gsap.to(marquee, {
+                    x: -totalWidth,
+                    repeat: -1,
+                    duration: 40, // Adjusted speed
+                    ease: "none",
+                });
+            }
+        }, containerRef);
+
+        return () => ctx.revert();
+    }, []);
+
+    return (
+        <section ref={containerRef} className={style.box}>
+
+            {/* 1. Marquee (Background Layer) */}
+            <div className={style.marqueeWrapper}>
+                <div ref={marqueeRef} className={style.marquee}>
+                    {[...Array(2)].map((_, i) => (
+                        <div key={i} className={style.marqueeGroup}>
+                            {/* Repeating text multiple times to ensure fill */}
+                            {[...Array(4)].map((_, j) => (
+                                <span key={j} className={style.marqueeItem}>
+                                    Mentor Union&nbsp;
+                                </span>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* 2. Main Content (Foreground Layer) */}
+            <div className='container'>
+
+                {/* A. Grid Section */}
+                <div className={style.gridBox}>
+                    <div className={style.gridItem}>
+                        <h3>1:1&nbsp;Access</h3>
+                        <p>no middle layers</p>
+                    </div>
+                    <div className={style.gridItem}>
+                        <h3>94%</h3>
+                        <p>mentors found unmatched clarity</p>
+                    </div>
+                    <div className={style.gridItem}>
+                        <h3>650+</h3>
+                        <p>mentors, one platform</p>
+                    </div>
+                    <div className={style.gridItem}>
+                        <h3>3 Calls</h3>
+                        <p>result in one breakthrough</p>
+                    </div>
+                    <div className={style.gridItem}>
+                        <h3>14,000+</h3>
+                        <p>completed calls</p>
+                    </div>
+                </div>
+
+                {/* B. Text Section */}
+                <div className={style.textBox}>
+                    <h4>
+                        Your Goals, Our Mentors <br />
+                        <span>Let's Make it Happen</span>
+                    </h4>
+                </div>
+            </div>
+
+            {/* 3. Slider (Bottom Layer) */}
+            <Slider images={Images} />
+
+        </section>
+    );
+}
+
+// --- Slider Component ---
+interface SliderProps {
+    images: string[];
+}
+
+export function Slider({ images }: SliderProps) {
+    const [sliderImages, setSliderImages] = useState(images);
+    const middleIndex = Math.floor(sliderImages.length / 2);
+    const trackRef = useRef<HTMLDivElement>(null);
+
+    const handleClick = (index: number) => {
+        if (index === middleIndex) return;
+
+        const offset = index - middleIndex;
+        let newImages;
+
+        if (offset > 0) {
+            newImages = sliderImages.slice(offset).concat(sliderImages.slice(0, offset));
+        } else {
+            newImages = sliderImages
+                .slice(offset + sliderImages.length)
+                .concat(sliderImages.slice(0, offset + sliderImages.length));
+        }
+
+        if (trackRef.current) {
+            // Animate out
+            gsap.to(trackRef.current, {
+                x: -offset * 300, // Approximate movement
+                opacity: 0.5,
+                duration: 0.3,
+                onComplete: () => {
+                    // Swap images and reset position instantly
+                    setSliderImages(newImages);
+                    gsap.set(trackRef.current, { x: 0, opacity: 1 });
+                },
+            });
+        }
     };
 
     return (
         <div className={style.sliderWrapper}>
-            <button onClick={prevSlide} className={style.navButton}>
-                ◀
-            </button>
-
-            <div className={style.slider}>
-                {images.map((img, i) => {
-                    const prevIndex = (activeIndex - 1 + images.length) % images.length;
-                    const nextIndex = (activeIndex + 1) % images.length;
-
+            <div className={style.sliderTrack} ref={trackRef}>
+                {sliderImages.map((img, i) => {
                     let className = style.slide;
-                    if (i === activeIndex) className += ` ${style.active}`;
-                    else if (i === prevIndex || i === nextIndex) className += ` ${style.near}`;
+                    if (i === middleIndex) className += ` ${style.active}`;
+                    else className += ` ${style.inactive}`;
+
+                    if (i === middleIndex) className += ` ${style.active}`;
+                    else if (i === middleIndex - 1 || i === middleIndex + 1) className += ` ${style.near}`;
                     else className += ` ${style.far}`;
 
                     return (
-                        <div key={i} className={className}>
-                            <img src={img} alt={`slide-${i}`} />
+                        <div
+                            key={`${img}-${i}`} // Unique key to force re-render on shuffle
+                            className={className}
+                            onClick={() => handleClick(i)}
+                        >
+                            <Image src={img} width={400} height={400} alt="slide" />
                         </div>
                     );
                 })}
             </div>
-
-            <button onClick={nextSlide} className={style.navButton}>
-                ▶
-            </button>
         </div>
     );
 }

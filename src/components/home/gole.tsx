@@ -154,7 +154,7 @@ export function Slider({ images }: SliderProps) {
                             className={className}
                             onClick={() => handleClick(i)}
                         >
-                            <Image src={img} width={400} height={400} alt="slide" />
+                            <Image src={img} fill alt="slide" />
                         </div>
                     );
                 })}

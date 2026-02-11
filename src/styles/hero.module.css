@@ -1,28 +1,141 @@
 .hero {
     position: relative;
     width: 100%;
-    height: 80vh;
+    height: 85vh;
     overflow: hidden;
 }
 
-/* Background Image */
+.wrapper {
+    /* Variables for side-aligned circles */
+    --outer-size: 1200px;
+    --inner-size: 1000px;
+    --planet-size: 75px;
+    --outer-radius: -600px;
+    /* Half of outer-size */
+    --inner-radius: -500px;
+    /* Half of inner-size */
+
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 50%;
+    /* Only occupies the left side */
+    height: 100%;
+    z-index: 2;
+}
+
+/* Responsive Scaling for the Side Arch */
+@media (max-width: 1024px) {
+    .wrapper {
+        --outer-size: 1200px;
+        --inner-size: 950px;
+        --planet-size: 65px;
+        --outer-radius: -600px;
+        --inner-radius: -475px;
+    }
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        --outer-size: 600px;
+        --inner-size: 400px;
+        --planet-size: 50px;
+        --outer-radius: -300px;
+        --inner-radius: -200px;
+    }
+}
+
+.circleOuter,
+.circleInner {
+    position: absolute;
+    /* Pivot point is now the vertical center of the left edge */
+    left: 50%;
+    top: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.circleOuter {
+    width: var(--outer-size);
+    height: var(--outer-size);
+}
+
+.circleInner {
+    width: var(--inner-size);
+    height: var(--inner-size);
+}
+
+.orbitContainer,
+.orbitContainerReverse {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+.orbitContainer {
+    animation: rotateOrbit 35s linear infinite;
+}
+
+.orbitContainerReverse {
+    animation: rotateOrbit 25s linear reverse infinite;
+}
+
+.planet,
+.planetSmall {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--planet-size);
+    height: var(--planet-size);
+    margin-top: calc(var(--planet-size) / -2);
+    margin-left: calc(var(--planet-size) / -2);
+    border-radius: 50%;
+    background: var(--inner-circle);
+    overflow: hidden;
+    transform: rotate(var(--angle)) translateY(var(--radius));
+}
+
+.planet {
+    --radius: var(--outer-radius);
+}
+
+.planetSmall {
+    --radius: var(--inner-radius);
+}
+
+.planet img,
+.planetSmall img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+@keyframes rotateOrbit {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Background & Content */
 .image {
     object-fit: cover;
     z-index: 0;
 }
 
-/* Overlay Layer */
 .overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top,
-            rgba(0, 0, 0, 0.85),
-            rgba(0, 0, 0, 0.5),
-            rgba(0, 0, 0, 0.2));
+    background: linear-gradient(90deg, #000 10%, transparent 100%);
     z-index: 1;
 }
 
-/* Content Layer */
 .content {
     position: absolute;
     bottom: 100px;
@@ -32,28 +145,33 @@
     color: var(--background);
 }
 
-/* Heading */
+@media (max-width: 768px) {
+    .content {
+        text-align: center;
+        right: 0;
+        left: 0;
+        bottom: 50px;
+        margin: auto;
+    }
+}
+
 .herotext {
     font-size: 52px;
     line-height: 1.2;
     margin-bottom: 20px;
+    font-weight: 700;
 }
 
 .herotext span {
-    background: linear-gradient(90deg,
-            var(--liner1),
-            var(--liner2),
-            var(--liner3));
+    background: linear-gradient(90deg, var(--liner1), var(--liner2), var(--liner3));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent;
 }
 
-/* Paragraph */
 .description {
     font-size: 16px;
-    margin-bottom: 24px;
-    color: var(--gray);
-    line-height: 150%;
+    margin-bottom: 30px;
+    color: #ccc;
+    line-height: 1.5;
 }

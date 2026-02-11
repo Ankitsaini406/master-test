@@ -2,6 +2,22 @@ import Image from "next/image";
 import styles from "@/src/styles/hero.module.css";
 
 export default function Hero() {
+
+    const images = [
+        "/person/1.png",
+        "/person/2.png",
+        "/person/3.png",
+        "/person/4.png",
+        "/person/5.png",
+        "/person/6.png",
+        "/person/7.png",
+        "/person/8.png",
+        "/person/9.png",
+        "/person/10.png",
+        "/person/11.png",
+        "/person/12.png",
+    ]
+
     return (
         <section className={styles.hero}>
             {/* Background Image */}
@@ -12,6 +28,38 @@ export default function Hero() {
                 priority
                 className={styles.image}
             />
+
+            <div className={styles.wrapper}>
+                {/* Outer Circle - 6 Images */}
+                <div className={styles.circleOuter}>
+                    <div className={styles.orbitContainer}>
+                        {images.slice(0, 6).map((img, i) => (
+                            <div
+                                key={i}
+                                className={styles.planet}
+                                style={{ "--angle": `${i * 60}deg` } as React.CSSProperties}
+                            >
+                                <img src={img} alt="mentor" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Inner Circle - 6 Images */}
+                <div className={styles.circleInner}>
+                    <div className={styles.orbitContainerReverse}>
+                        {images.slice(6, 12).map((img, i) => (
+                            <div
+                                key={i}
+                                className={styles.planetSmall}
+                                style={{ "--angle": `${i * 60}deg` } as React.CSSProperties}
+                            >
+                                <img src={img} alt="mentor" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
 
             {/* Dark Overlay */}
             <div className={styles.overlay} />

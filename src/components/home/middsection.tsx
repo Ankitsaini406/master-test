@@ -14,11 +14,13 @@ export default function MiddSection() {
     const pathRef = useRef<SVGPathElement>(null)
     const text1Ref = useRef<HTMLHeadingElement>(null)
     const text2Ref = useRef<HTMLHeadingElement>(null)
+    const svgRef = useRef<SVGSVGElement>(null)
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
             const path = pathRef.current
-            if (!path) return
+            const svg = svgRef.current
+            if (!path || !svg) return
 
             const length = path.getTotalLength()
 
@@ -30,13 +32,17 @@ export default function MiddSection() {
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: sectionRef.current,
-                    start: "top top",
+                    start: "top 40%",
                     end: "bottom bottom",
                     scrub: true,
                 },
             })
 
             // Draw SVG line
+            tl.to(svg, {
+                opacity: 1,
+                duration: 0.2,
+            })
             tl.to(path, {
                 strokeDashoffset: 0,
                 ease: "none",
@@ -74,7 +80,7 @@ export default function MiddSection() {
         <section ref={sectionRef} className={style.section}>
 
             {/* Sticky SVG */}
-            <svg className={style.svg} viewBox="0 0 1000 600" preserveAspectRatio="none">
+            <svg ref={svgRef} className={style.svg} viewBox="0 0 1000 600" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="curveGradient" x1="100%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor="#E38330" />

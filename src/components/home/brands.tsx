@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useCallback, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "@/src/styles/brands.module.css";
@@ -9,86 +9,229 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-// Example: each cell has 4 images
-const brandCells = [
-    ["/brands/meta.png", "/brands/microsoft.png", "/brands/apple.png", "/brands/egle.png"],
-    ["/brands/microsoft.png", "/brands/amazone.png", "/brands/blackrock.png", "/brands/citi.png"],
-    ["/brands/apple.png", "/brands/goldman.png", "/brands/jp.png", "/brands/kpmg.png"],
-    ["/brands/google.jpg", "/brands/cred.png", "/brands/ace.png", "/brands/bcg.png"],
-    ["/brands/egle.png", "/brands/ey.png", "/brands/deloitte.png", "/brands/slash.png"],
-    ["/brands/amazone.png", "/brands/linkdin.png", "/brands/pwc.png", "/brands/birla.png"],
-    ["/brands/blackrock.png", "/brands/microsoft.png", "/brands/apple.png", "/brands/google.png"],
-    ["/brands/citi.png", "/brands/amazone.png", "/brands/blackrock.png", "/brands/pwc.png"],
-    ["/brands/g.png", "/brands/goldman.png", "/brands/jp.png", "/brands/kpmg.png"],
-    ["/brands/goldman.jpg", "/brands/cred.png", "/brands/ace.png", "/brands/bcg.png"],
-    ["/brands/kpmg.png", "/brands/ey.png", "/brands/deloitte.png", "/brands/slash.png"],
-    ["/brands/ax.jpg", "/brands/linkdin.png", "/brands/pwc.png", "/brands/birla.png"],
+/* ==========================================
+   Type Definitions
+   ========================================== */
+interface BrandImages {
+    front: string;
+    back: string;
+    left: string;
+    right: string;
+}
 
-    ["/brands/cred.png", "/brands/microsoft.png", "/brands/apple.png", "/brands/google.png"],
-    ["/brands/ace.png", "/brands/amazone.png", "/brands/blackrock.png", "/brands/citi.png"],
-    ["/brands/bcg.png", "/brands/goldman.png", "/brands/jp.png", "/brands/kpmg.png"],
-    ["/brands/blinkit.jpg", "/brands/cred.png", "/brands/ace.png", "/brands/bcg.png"],
-    ["/brands/ey.png", "/brands/birla.png", "/brands/deloitte.png", "/brands/slash.png"],
-    ["/brands/deloitte.png", "/brands/linkdin.png", "/brands/pwc.png", "/brands/birla.png"],
-    ["/brands/slash.png", "/brands/microsoft.png", "/brands/apple.png", "/brands/google.png"],
-    ["/brands/mk.png", "/brands/amazone.png", "/brands/blackrock.png", "/brands/citi.png"],
-    ["/brands/g.png", "/brands/goldman.png", "/brands/jp.png", "/brands/kpmg.png"],
-    ["/brands/linkdin.png", "/brands/cred.png", "/brands/ace.png", "/brands/bcg.png"],
-    ["/brands/pwc.png", "/brands/ey.png", "/brands/deloitte.png", "/brands/slash.png"],
-    ["/brands/birla.png", "/brands/linkdin.png", "/brands/pwc.png", "/brands/birla.png"],
-    // repeat to make 24 cells
-];
+interface BrandCell {
+    id: string;
+    images: BrandImages;
+}
 
-export default function Brands() {
-    const cubeRefs = useRef<HTMLDivElement[]>([]);
+/* ==========================================
+   Constants & Configuration
+   ========================================== */
+const ANIMATION_CONFIG = {
+    rotation: 180,
+    scrollTrigger: {
+        start: "top 90%",
+        end: "bottom top",
+        scrub: true,
+    },
+    ease: "none",
+} as const;
 
-    useLayoutEffect(() => {
-        cubeRefs.current.forEach((cube) => {
-            gsap.to(cube, {
-                rotationY: 180,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: cube,
-                    start: "top 60%",
-                    end: "bottom top",
-                    scrub: true,
-                },
-            });
+// Organize brand images for better maintainability
+const BRAND_LOGOS = {
+    meta: "/brands/meta.png",
+    microsoft: "/brands/microsoft.png",
+    apple: "/brands/apple.png",
+    google: "/brands/google.jpg",
+    eagle: "/brands/egle.png",
+    amazon: "/brands/amazone.png",
+    blackrock: "/brands/blackrock.png",
+    citi: "/brands/citi.png",
+    goldman: "/brands/goldman.png",
+    jp: "/brands/jp.png",
+    kpmg: "/brands/kpmg.png",
+    cred: "/brands/cred.png",
+    accenture: "/brands/ace.png",
+    bcg: "/brands/bcg.png",
+    blinkit: "/brands/blinkit.jpg",
+    ey: "/brands/ey.png",
+    deloitte: "/brands/deloitte.png",
+    slash: "/brands/slash.png",
+    linkedin: "/brands/linkdin.png",
+    pwc: "/brands/pwc.png",
+    birla: "/brands/birla.png",
+    g: "/brands/g.png",
+    ax: "/brands/ax.jpg",
+    mk: "/brands/mk.png",
+    goldmanAlt: "/brands/goldman.png",
+} as const;
+
+/* ==========================================
+   Brand Data Generator
+   ========================================== */
+const generateBrandCells = (): BrandCell[] => {
+    const cells: BrandCell[] = [];
+    const brandLogos = Object.values(BRAND_LOGOS);
+
+    // Generate 24 cells with rotating brand combinations
+    for (let i = 0; i < 24; i++) {
+        const startIndex = (i * 4) % brandLogos.length;
+        cells.push({
+            id: `brand-cell-${i}`,
+            images: {
+                front: brandLogos[startIndex % brandLogos.length],
+                right: brandLogos[(startIndex + 1) % brandLogos.length],
+                back: brandLogos[(startIndex + 2) % brandLogos.length],
+                left: brandLogos[(startIndex + 3) % brandLogos.length],
+            },
         });
+    }
+
+    return cells;
+};
+
+/* ==========================================
+   Main Component
+   ========================================== */
+export default function Brands() {
+    const cubeRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
+
+    // Memoize brand data to prevent recalculation
+    const brandCells = useMemo(() => generateBrandCells(), []);
+
+    // Optimized ref setter
+    const setCubeRef = useCallback((el: HTMLDivElement | null, idx: number) => {
+        cubeRefs.current[idx] = el;
     }, []);
 
+    /* ==========================================
+       Animation Setup
+       ========================================== */
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            // Clean up any existing ScrollTriggers
+            scrollTriggersRef.current.forEach((st) => st.kill());
+            scrollTriggersRef.current = [];
+
+            // Determine if mobile for optimized animations
+            const isMobile = window.innerWidth < 768;
+
+            cubeRefs.current.forEach((cube) => {
+                if (!cube) return;
+
+                // Create animation with optimized settings
+                const animation = gsap.to(cube, {
+                    rotationY: ANIMATION_CONFIG.rotation,
+                    ease: ANIMATION_CONFIG.ease,
+                    scrollTrigger: {
+                        trigger: cube,
+                        start: ANIMATION_CONFIG.scrollTrigger.start,
+                        end: ANIMATION_CONFIG.scrollTrigger.end,
+                        scrub: isMobile ? 0.5 : true,
+                        // Optimize for performance
+                        invalidateOnRefresh: true,
+                        // Only refresh on resize, not on every scroll
+                        refreshPriority: -1,
+                    },
+                });
+
+                // Store reference for cleanup
+                const triggerId = animation.scrollTrigger?.vars.id;
+                if (triggerId) {
+                    const st = ScrollTrigger.getById(triggerId);
+                    if (st) scrollTriggersRef.current.push(st);
+                }
+            });
+        });
+
+        // Cleanup function
+        return () => {
+            ctx.revert();
+            scrollTriggersRef.current.forEach((st) => st.kill());
+            scrollTriggersRef.current = [];
+        };
+    }, [brandCells.length]); // Only re-run if brand cells length changes
+
+    // Refresh ScrollTrigger on window resize (debounced by GSAP)
+    useLayoutEffect(() => {
+        const handleResize = () => {
+            ScrollTrigger.refresh();
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    /* ==========================================
+       Render
+       ========================================== */
     return (
-        <div className="container">
+        <section
+            className="container"
+            aria-labelledby="brands-heading"
+        >
             <div className={styles.box}>
-                <h2>
+                <h2 id="brands-heading">
                     Gain Access to Mentors from <br />
-                    <em>Global Brands</em>
+                    <span>Global Brands</span>
                 </h2>
             </div>
 
-            <div className={styles.grid}>
-                {brandCells.map((images, idx) => (
+            <div
+                className={styles.grid}
+                role="list"
+                aria-label="Brand logos showcase"
+            >
+                {brandCells.map((cell, idx) => (
                     <div
-                        key={idx}
+                        key={cell.id}
                         className={styles.cell}
+                        role="listitem"
+                        aria-label={`Brand showcase ${idx + 1}`}
                     >
                         <div
                             className={styles.cube}
-                            ref={(el: HTMLDivElement | null) => {
-                                if (el) cubeRefs.current[idx] = el; // ✅ no return
-                            }}
+                            ref={(el) => setCubeRef(el, idx)}
+                            data-cube-index={idx}
                         >
-                            <div className={`${styles.face} ${styles.front}`} style={{ backgroundImage: `url(${images[0]})` }} />
-                            <div className={`${styles.face} ${styles.back}`} style={{ backgroundImage: `url(${images[2]})` }} />
-                            <div className={`${styles.face} ${styles.left}`} style={{ backgroundImage: `url(${images[3]})` }} />
-                            <div className={`${styles.face} ${styles.right}`} style={{ backgroundImage: `url(${images[1]})` }} />
+                            <div
+                                className={`${styles.face} ${styles.front}`}
+                                style={{ backgroundImage: `url(${cell.images.front})` }}
+                                role="img"
+                                aria-label="Brand logo"
+                            />
+                            <div
+                                className={`${styles.face} ${styles.back}`}
+                                style={{ backgroundImage: `url(${cell.images.back})` }}
+                                role="img"
+                                aria-label="Brand logo"
+                            />
+                            <div
+                                className={`${styles.face} ${styles.left}`}
+                                style={{ backgroundImage: `url(${cell.images.left})` }}
+                                role="img"
+                                aria-label="Brand logo"
+                            />
+                            <div
+                                className={`${styles.face} ${styles.right}`}
+                                style={{ backgroundImage: `url(${cell.images.right})` }}
+                                role="img"
+                                aria-label="Brand logo"
+                            />
                         </div>
                     </div>
                 ))}
             </div>
-        </div>
+        </section>
     );
 }
+
+/* ==========================================
+   Export Types for External Use
+   ========================================== */
+export type { BrandImages, BrandCell };
+export { BRAND_LOGOS };
 
 // const brandData = [
 //     { name: "Brand 1", img: "/brands/meta.png" },

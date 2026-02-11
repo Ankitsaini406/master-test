@@ -1,52 +1,184 @@
+/* ==========================================
+   CSS Custom Properties (Design Tokens)
+   ========================================== */
+:root {
+    --brand-grid-gap: 0px;
+    --brand-cube-size: 52px;
+    --brand-perspective: 1000px;
+    --brand-cube-perspective: 800px;
+    --brand-border-color: #e0e0e0;
+    --brand-transition-duration: 0.3s;
+    --brand-translateZ: 26px;
+    /* Half of cube size */
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+    :root {
+        --brand-cube-size: 40px;
+        --brand-perspective: 600px;
+        --brand-cube-perspective: 500px;
+        --brand-translateZ: 20px;
+    }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+    :root {
+        --brand-cube-size: 48px;
+        --brand-perspective: 800px;
+        --brand-cube-perspective: 650px;
+        --brand-translateZ: 24px;
+    }
+}
+
+/* ==========================================
+   Header Section
+   ========================================== */
 .box {
     display: flex;
     text-align: center;
     align-items: center;
     justify-content: center;
-    margin-bottom: 2rem;
-    padding-top: 71px;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    padding-top: clamp(2rem, 5vw, 4.5rem);
+    padding-inline: 1rem;
 }
 
+.box h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    line-height: 1.3;
+    max-width: 90%;
+    font-weight: 400;
+}
+
+.box h2 span {
+    font-style: normal;
+    font-style: italic;
+}
+
+/* ==========================================
+   Responsive Grid
+   ========================================== */
 .grid {
     display: grid;
-    padding-bottom: 71px;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(4, 89px);
-    gap: 0;
-    perspective: 1000px;
+    padding-bottom: clamp(2rem, 5vw, 4.5rem);
+    padding-inline: 0;
+    gap: var(--brand-grid-gap);
+    perspective: var(--brand-perspective);
+
+    /* Responsive columns */
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    grid-auto-rows: minmax(70px, auto);
+
+    /* Ensure proper aspect ratio */
+    width: 100%;
+    max-width: 100%;
 }
 
-/* Cube cell borders */
+/* Mobile: 3 columns */
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: minmax(65px, auto);
+    }
+}
+
+/* Tablet: 4 columns */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: minmax(75px, auto);
+    }
+}
+
+/* Desktop: 6 columns */
+@media (min-width: 1025px) {
+    .grid {
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: minmax(89px, auto);
+    }
+}
+
+/* Large screens: enforce max width */
+@media (min-width: 1440px) {
+    .grid {
+        max-width: 1400px;
+        margin-inline: auto;
+    }
+}
+
+/* ==========================================
+   Cell Styling
+   ========================================== */
 .cell {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top: 1px solid #ccc;
-    border-left: 1px solid #ccc;
+    border-top: 1px solid var(--brand-border-color);
+    border-left: 1px solid var(--brand-border-color);
     overflow: visible;
-    perspective: 800px;
+    perspective: var(--brand-cube-perspective);
+    /* aspect-ratio: 1 / 1; */
+    min-height: 89px;
 }
 
-/* Remove top border for first row */
-.cell:nth-child(-n + 6) {
-    border-top: 0;
+/* Remove top border for first row - responsive */
+@media (max-width: 640px) {
+    .cell:nth-child(-n + 3) {
+        border-top: 0;
+    }
+
+    .cell:nth-child(3n + 1) {
+        border-left: 0;
+    }
 }
 
-/* Remove left border for first column */
-.cell:nth-child(6n + 1) {
-    border-left: 0;
+@media (min-width: 641px) and (max-width: 1024px) {
+    .cell:nth-child(-n + 4) {
+        border-top: 0;
+    }
+
+    .cell:nth-child(4n + 1) {
+        border-left: 0;
+    }
 }
 
+@media (min-width: 1025px) {
+    .cell:nth-child(-n + 6) {
+        border-top: 0;
+    }
+
+    .cell:nth-child(6n + 1) {
+        border-left: 0;
+    }
+}
+
+/* ==========================================
+   3D Cube
+   ========================================== */
 .cube {
-    width: 52px;
-    height: 52px;
+    width: var(--brand-cube-size);
+    height: var(--brand-cube-size);
     position: relative;
     transform-style: preserve-3d;
     transform: rotateX(0deg) rotateY(0deg);
-    transition: transform 0.3s ease;
+    transition: transform var(--brand-transition-duration) ease;
+    will-change: transform;
 }
 
+/* Optimize for performance */
+.cube * {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+/* ==========================================
+   Cube Faces
+   ========================================== */
 .face {
     position: absolute;
     width: 100%;
@@ -55,21 +187,107 @@
     background-position: center;
     background-repeat: no-repeat;
     backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Improve image rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
 }
 
-/* Cube faces */
+/* Individual face transforms using CSS variable */
 .front {
-    transform: rotateY(0deg) translateZ(50px);
+    transform: rotateY(0deg) translateZ(var(--brand-translateZ));
 }
 
 .back {
-    transform: rotateY(180deg) translateZ(50px);
+    transform: rotateY(180deg) translateZ(var(--brand-translateZ));
 }
 
 .left {
-    transform: rotateY(-90deg) translateZ(50px);
+    transform: rotateY(-90deg) translateZ(var(--brand-translateZ));
 }
 
 .right {
-    transform: rotateY(90deg) translateZ(50px);
+    transform: rotateY(90deg) translateZ(var(--brand-translateZ));
+}
+
+/* ==========================================
+   Loading & Error States
+   ========================================== */
+.face::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.face:not([style*="background-image"])::after {
+    opacity: 1;
+}
+
+/* ==========================================
+   Accessibility & Reduced Motion
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+    .cube {
+        transition: none;
+    }
+
+    .face {
+        transition: none;
+    }
+}
+
+/* Focus states for accessibility */
+.cell:focus-within {
+    outline: 2px solid #39B5D7;
+    outline-offset: 2px;
+    z-index: 10;
+}
+
+/* ==========================================
+   Performance Optimizations
+   ========================================== */
+.grid {
+    /* Force GPU acceleration */
+    transform: translateZ(0);
+    will-change: scroll-position;
+}
+
+/* Improve scroll performance on mobile */
+@media (max-width: 768px) {
+    .cube {
+        /* Reduce complexity on mobile */
+        transform: rotateY(0deg);
+    }
+}
+
+/* ==========================================
+   Print Styles
+   ========================================== */
+@media print {
+    .grid {
+        perspective: none;
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    .cube {
+        transform: none !important;
+    }
+
+    .face {
+        transform: none !important;
+        position: relative !important;
+    }
+
+    .back,
+    .left,
+    .right {
+        display: none;
+    }
 }

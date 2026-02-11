@@ -32,13 +32,18 @@ export default function MiddSection() {
                 gsap.set(p, { strokeDasharray: len, strokeDashoffset: len })
             })
 
+            // Check if mobile
+            const isMobile = window.innerWidth < 768
+
             // Timeline
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: sectionRef.current,
                     start: "top top",
                     end: "bottom bottom",
-                    scrub: true,
+                    // scrub: true,
+                    // Reduce scrub smoothing on mobile for better performance
+                    scrub: isMobile ? 0.5 : true,
                 },
             })
 
@@ -55,12 +60,13 @@ export default function MiddSection() {
                 0.5
             )
 
-            // Text animations
-            tl.to(text1Ref.current, { opacity: 0, y: -40, duration: 0.5 }, 0.4)
+            // Text animations - adjust timing for mobile
+            const textDuration = isMobile ? 0.4 : 0.5
+            tl.to(text1Ref.current, { opacity: 0, y: -40, duration: textDuration }, 0.4)
                 .fromTo(
                     text2Ref.current,
                     { opacity: 0, y: 40 },
-                    { opacity: 1, y: 0, duration: 0.5 },
+                    { opacity: 1, y: 0, duration: textDuration },
                     0.6
                 )
         }, sectionRef)

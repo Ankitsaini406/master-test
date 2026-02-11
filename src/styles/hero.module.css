@@ -1,7 +1,7 @@
 .hero {
     position: relative;
     width: 100%;
-    height: 720px;
+    height: 80vh;
     overflow: hidden;
 }
 
@@ -41,9 +41,9 @@
 
 .herotext span {
     background: linear-gradient(90deg,
-            #39B5D7,
-            #F7D544,
-            #E38330);
+            var(--liner1),
+            var(--liner2),
+            var(--liner3));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

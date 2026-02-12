@@ -1,3 +1,182 @@
-.box {
-    padding: 10rem 0;
+.section {
+    background: linear-gradient(to bottom,
+            #ffffff 0%,
+            #ffffff 80%,
+            #090909 80%,
+            #090909 100%);
+    padding: 6rem 1rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+.headerContent {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.headerContent h4 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: #000;
+}
+
+.headerContent span {
+    font-style: italic;
+}
+
+.laptopWrapper {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    perspective: 2500px; 
+    cursor: pointer;
+    margin-top: 50px; 
+}
+
+.macbookLid {
+    width: 80%;
+    aspect-ratio: 16/10;
+    background: #0d0d0d;
+    border-radius: 24.5px 24.5px 0 0;
+    padding: 1.5%;
+    position: relative;
+    transform-style: preserve-3d;
+    will-change: transform;
+    border: 5px solid rgba(255, 255, 255, 0.4);
+}
+
+.screenContent {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+}
+
+.video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ===== PLAY OVERLAY ===== */
+
+.playOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.playOverlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.playButton {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+
+    transition: transform 0.3s ease;
+}
+
+.playButton:hover {
+    transform: scale(1.1);
+}
+
+.playButton svg {
+    width: 30px;
+    height: 30px;
+    margin-left: 4px;
+}
+
+/* ===== BASE ===== */
+
+.macbookBase {
+    width: 100%;
+    height: 18px;
+
+    background: linear-gradient(to bottom, #d2d2d2, #aaaaaa);
+    border-radius: 0 0 16px 16px;
+
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.trackpadGroove {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 6px;
+    background: #999;
+    border-radius: 0 0 6px 6px;
+    opacity: 0.6;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1024px) {
+    .macbookLid {
+        width: 85%;
+    }
+
+    .macbookBase {
+        height: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        background: linear-gradient(to bottom,
+                #ffffff 0%,
+                #ffffff 85%,
+                #090909 85%,
+                #090909 100%);
+    }
+
+    .macbookLid {
+        width: 92%;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .macbookBase {
+        height: 10px;
+    }
+
+    .playButton {
+        width: 50px;
+        height: 50px;
+    }
+
+    .playButton svg {
+        width: 20px;
+        height: 20px;
+    }
 }

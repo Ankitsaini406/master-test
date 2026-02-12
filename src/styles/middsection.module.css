@@ -43,8 +43,9 @@
     position: relative;
     margin: 0;
     padding: 0 1.5rem;
-    font-size: clamp(2rem, 5vw + 1rem, 4.5rem);
-    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(15px, 5vw + 1rem, 50px);
+    font-weight: 400;
     line-height: 1.1;
     text-align: center;
     max-width: 1200px;

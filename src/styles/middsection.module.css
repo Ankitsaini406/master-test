@@ -73,5 +73,6 @@
     .svgLayer svg {
         object-fit: cover;
         opacity: 0.6;
+        height: 100%;
     }
 }

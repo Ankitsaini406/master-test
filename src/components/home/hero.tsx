@@ -77,8 +77,7 @@ export default function Hero() {
                     </h1>
 
                     <p className={`${styles.description} reveal`}>
-                        Get <b>real-world insights</b> and career guidance from 650+ seasoned <br />
-                        industry experts
+                        Get <b>real-world insights</b> and career guidance from 650+ seasoned industry experts
                     </p>
 
                     <button className="sec-button reveal">

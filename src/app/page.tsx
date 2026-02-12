@@ -5,7 +5,7 @@ import MiddSection from "../components/home/middsection";
 import MentorShip from "../components/home/mentorship";
 import FAQ from "../components/home/faq";
 
-export default function Home() {
+export default async function Home() {
   return (
       <>
         <Hero />

@@ -156,6 +156,8 @@ background-image:
     font-weight: 300;
     line-height: 1;
     border-radius: 50%;
+    color: var(--foreground);
+    flex-shrink: 0;
     border: 1px solid var(--gray-80);
     transition:
         transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),

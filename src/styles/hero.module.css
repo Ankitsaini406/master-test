@@ -20,6 +20,29 @@
     z-index: 2;
 }
 
+.herotext {
+    font-size: clamp(28px, 5vw, 52px);
+    line-height: 1.2;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.herotext span {
+    background: linear-gradient(90deg, var(--liner1), var(--liner2), var(--liner3));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.description {
+    font-size: clamp(14px, 2.5vw, 16px);
+    margin-bottom: 24px;
+    color: #ccc;
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+
 /* Responsive Scaling for the Side Arch */
 @media (max-width: 1024px) {
     .wrapper {
@@ -144,30 +167,15 @@
 @media (max-width: 768px) {
     .content {
         text-align: center;
+        top: 100px;
         right: 0;
         left: 0;
         bottom: 50px;
         margin: auto;
     }
-}
 
-.herotext {
-    font-size: 52px;
-    line-height: 1.2;
-    margin-bottom: 20px;
-    font-weight: 400;
-}
-
-.herotext span {
-    background: linear-gradient(90deg, var(--liner1), var(--liner2), var(--liner3));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.description {
-    font-size: 16px;
-    margin-bottom: 30px;
-    color: #ccc;
-    line-height: 1.5;
+    .description {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

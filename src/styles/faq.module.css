@@ -1,7 +1,42 @@
 .faqSection {
     padding: 100px 0;
-    background-color: #fff;
-    color: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.faqSection::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 35%;
+    height: 100%;
+
+    pointer-events: none;
+    z-index: -1;
+
+    /* Grid */
+background-image:
+    linear-gradient(rgba(210, 210, 210, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(155, 155, 155, 0.2) 1px, transparent 1px);
+
+
+    background-size: 20px 20px;
+
+    /* Triangle shape */
+    clip-path: polygon(100% 0%, 0% 100%, 100% 100%);
+
+    /* Fade from top-right */
+    mask-image: linear-gradient(225deg,
+            transparent 0%,
+            rgba(0, 0, 0, 0.4) 30%,
+            rgba(0, 0, 0, 1) 65%);
+
+    -webkit-mask-image: linear-gradient(225deg,
+            transparent 0%,
+            rgba(0, 0, 0, 0.4) 30%,
+            rgba(0, 0, 0, 1) 65%);
 }
 
 .title {
@@ -89,6 +124,7 @@
     border: 1px solid var(--gray-80);
     padding: 16px 20px 0px 16px;
     border-radius: 12px;
+    background-color: var(--background);
 }
 
 .questionBtn {

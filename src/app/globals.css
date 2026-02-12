@@ -10,7 +10,7 @@
 
   --border: #D4D4D4;
 
-  --inner-circle:#FBF1C9;
+  --inner-circle: #FBF1C9;
 
   --liner1: #39B5D7;
   --liner2: #F7D544;
@@ -144,4 +144,20 @@ button {
 .pri-button:hover .icon2,
 .sec-button:hover .icon2 {
   transform: translate(0%, 0%);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.8s ease;
+}
+
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.line {
+    display: block;
+    overflow: hidden;
 }

@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useLayoutEffect, useRef } from "react"
+import gsap from "gsap"
 import style from "@/src/styles/faq.module.css"
 
 // Structured Data
@@ -36,12 +37,57 @@ export default function FAQ() {
     const [activeTab, setActiveTab] = useState(0); // For Left Categories
     const [openId, setOpenId] = useState<number | null>(null); // For Right Accordion
 
+    const faqSectionRef = useRef<HTMLDivElement>(null)
+    const sidebarRef = useRef<HTMLDivElement>(null)
+    const faqListRef = useRef<HTMLDivElement>(null)
+
     const toggleAccordion = (id: number) => {
-        setOpenId(openId === id ? null : id);
-    };
+        setOpenId(openId === id ? null : id)
+    }
+
+    // Animate only once when the FAQ section enters viewport
+    useLayoutEffect(() => {
+        if (!faqSectionRef.current) return
+
+        const ctx = gsap.context(() => {
+            // Animate sidebar buttons
+            if (sidebarRef.current?.children) {
+                gsap.from(sidebarRef.current.children, {
+                    opacity: 0,
+                    y: 20,
+                    stagger: 0.1,
+                    duration: 0.6,
+                    scrollTrigger: {
+                        trigger: faqSectionRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none none",
+                        once: true, // important: run only once
+                    },
+                })
+            }
+
+            // Animate initial FAQ items
+            if (faqListRef.current?.children) {
+                gsap.from(faqListRef.current.children, {
+                    opacity: 0,
+                    y: 20,
+                    stagger: 0.1,
+                    duration: 0.6,
+                    scrollTrigger: {
+                        trigger: faqSectionRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none none",
+                        once: true,
+                    },
+                })
+            }
+        }, faqSectionRef)
+
+        return () => ctx.revert()
+    }, [])
 
     return (
-        <section className={style.faqSection}>
+        <section className={style.faqSection} ref={faqSectionRef}>
             <div className="container">
                 <h5 className={style.title}>
                     Frequently Asked <br /> <span>Questions</span>
@@ -49,15 +95,15 @@ export default function FAQ() {
 
                 <div className={style.contentWrapper}>
                     {/* LEFT SIDE: Sticky Categories */}
-                    <div className={style.sidebar}>
+                    <div className={style.sidebar} ref={sidebarRef}>
                         <div className={style.stickyNav}>
                             {faqData.map((item, index) => (
                                 <button
                                     key={index}
                                     className={`${style.catLink} ${activeTab === index ? style.activeCat : ""}`}
                                     onClick={() => {
-                                        setActiveTab(index);
-                                        setOpenId(null); // Close answers when switching categories
+                                        setActiveTab(index)
+                                        setOpenId(null)
                                     }}
                                 >
                                     {item.category}
@@ -67,7 +113,7 @@ export default function FAQ() {
                     </div>
 
                     {/* RIGHT SIDE: Accordion Questions */}
-                    <div className={style.faqList}>
+                    <div className={style.faqList} ref={faqListRef}>
                         {faqData[activeTab].questions.map((faq) => (
                             <div
                                 key={faq.id}

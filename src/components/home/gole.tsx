@@ -4,6 +4,7 @@ import { useState, useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 import style from "@/src/styles/gole.module.css";
 import Image from "next/image";
+import { useReveal } from "@/src/hook/useReveal";
 
 export default function GoleMentors() {
     const Images = [
@@ -13,6 +14,8 @@ export default function GoleMentors() {
         "/images/4.png",
         "/images/5.png",
     ];
+
+    useReveal();
 
     const marqueeRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +61,7 @@ export default function GoleMentors() {
             <div className='container'>
 
                 {/* A. Grid Section */}
-                <div className={style.gridBox}>
+                <div className={`${style.gridBox} reveal`}>
                     <div className={style.gridItem}>
                         <h3>1:1&nbsp;Access</h3>
                         <p>no middle layers</p>
@@ -83,7 +86,7 @@ export default function GoleMentors() {
 
                 {/* B. Text Section */}
                 <div className={style.textBox}>
-                    <h4>
+                    <h4 className="reveal">
                         Your Goals, Our Mentors <br />
                         <span>Let's Make it Happen</span>
                     </h4>

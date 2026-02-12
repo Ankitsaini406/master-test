@@ -6,20 +6,16 @@
 }
 
 .wrapper {
-    /* Variables for side-aligned circles */
     --outer-size: 1200px;
     --inner-size: 1000px;
     --planet-size: 75px;
     --outer-radius: -600px;
-    /* Half of outer-size */
     --inner-radius: -500px;
-    /* Half of inner-size */
 
     position: absolute;
     left: 0;
     top: 50%;
     width: 50%;
-    /* Only occupies the left side */
     height: 100%;
     z-index: 2;
 }

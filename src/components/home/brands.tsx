@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useCallback, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "@/src/styles/brands.module.css";
+import { useReveal } from "@/src/hook/useReveal";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
@@ -97,6 +98,8 @@ export default function Brands() {
     const cubeRefs = useRef<(HTMLDivElement | null)[]>([]);
     const scrollTriggersRef = useRef<ScrollTrigger[]>([]);
 
+    useReveal();
+
     // Memoize brand data to prevent recalculation
     const brandCells = useMemo(() => generateBrandCells(), []);
 
@@ -172,7 +175,7 @@ export default function Brands() {
             aria-labelledby="brands-heading"
         >
             <div className={styles.box}>
-                <h2 id="brands-heading">
+                <h2 id="brands-heading" className="reveal">
                     Gain Access to Mentors from <br />
                     <span>Global Brands</span>
                 </h2>
@@ -226,12 +229,6 @@ export default function Brands() {
         </section>
     );
 }
-
-/* ==========================================
-   Export Types for External Use
-   ========================================== */
-export type { BrandImages, BrandCell };
-export { BRAND_LOGOS };
 
 // const brandData = [
 //     { name: "Brand 1", img: "/brands/meta.png" },

@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import styles from "@/src/styles/hero.module.css";
+import { useReveal } from "@/src/hook/useReveal";
 
 export default function Hero() {
+    useReveal();
 
     const images = [
         "/person/1.png",
@@ -67,17 +71,17 @@ export default function Hero() {
             {/* Content */}
             <div className={styles.content}>
                 <div className="container">
-                    <h1 className={styles.herotext}>
+                    <h1 className={`${styles.herotext} reveal`}>
                         Unlock Your Potential <br />
                         with <span><em>1:1</em> Mentorship</span>
                     </h1>
 
-                    <p className={styles.description}>
+                    <p className={`${styles.description} reveal`}>
                         Get <b>real-world insights</b> and career guidance from 650+ seasoned <br />
                         industry experts
                     </p>
 
-                    <button className="sec-button">
+                    <button className="sec-button reveal">
                         Browse Mentors
                         <span className="icon-wrapper">
                             <img src="/icons/arrow.svg" className="btn-icon icon1" />

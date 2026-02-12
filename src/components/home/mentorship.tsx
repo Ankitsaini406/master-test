@@ -11,6 +11,7 @@ if (typeof window !== "undefined") {
 
 export default function MentorShip() {
     const sectionRef = useRef<HTMLDivElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
     const laptopRef = useRef<HTMLDivElement>(null)
     const videoRef = useRef<HTMLVideoElement>(null)
     const lidRef = useRef<HTMLDivElement>(null)
@@ -18,6 +19,35 @@ export default function MentorShip() {
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
+
+            // -----------------------------
+            // CINEMATIC TEXT REVEAL
+            // -----------------------------
+            const lines = headerRef.current?.querySelectorAll(".line")
+
+            if (lines) {
+                gsap.set(lines, {
+                    opacity: 0,
+                    y: 80
+                })
+
+                gsap.to(lines, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1.2,
+                    ease: "power4.out",
+                    stagger: 0.25,
+                    scrollTrigger: {
+                        trigger: headerRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    }
+                })
+            }
+
+            // -----------------------------
+            // LAPTOP LID ANIMATION
+            // -----------------------------
             if (!lidRef.current || !laptopRef.current) return
 
             gsap.set(lidRef.current, {
@@ -39,6 +69,9 @@ export default function MentorShip() {
                 ease: "power2.out"
             })
 
+            // -----------------------------
+            // VIDEO PLAY / PAUSE
+            // -----------------------------
             ScrollTrigger.create({
                 trigger: laptopRef.current,
                 start: "top 50%",
@@ -70,15 +103,23 @@ export default function MentorShip() {
 
     return (
         <section ref={sectionRef} className={style.section}>
-            <div className={style.headerContent}>
+            
+            {/* HEADER */}
+            <div ref={headerRef} className={style.headerContent}>
                 <h4>
-                    Begin Your Mentorship <br />
-                    Journey in <span>5 steps</span>
+                    <span className="line">Begin Your Mentorship</span>
+                    <span className="line">
+                        Journey in <span>5 steps</span>
+                    </span>
                 </h4>
             </div>
 
-            {/* Added laptopRef here */}
-            <div ref={laptopRef} className={style.laptopWrapper} onClick={toggleVideo}>
+            {/* LAPTOP */}
+            <div 
+                ref={laptopRef} 
+                className={style.laptopWrapper} 
+                onClick={toggleVideo}
+            >
                 <div ref={lidRef} className={style.macbookLid}>
                     <div className={style.screenContent}>
                         <div className={`${style.playOverlay} ${isPlaying ? style.hidden : ""}`}>
@@ -88,6 +129,7 @@ export default function MentorShip() {
                                 </svg>
                             </div>
                         </div>
+
                         <video
                             ref={videoRef}
                             className={style.video}
@@ -103,6 +145,7 @@ export default function MentorShip() {
                     <div className={style.trackpadGroove}></div>
                 </div>
             </div>
+
         </section>
     )
 }

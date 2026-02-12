@@ -124,7 +124,7 @@ export default function FAQ() {
                                     onClick={() => toggleAccordion(faq.id)}
                                 >
                                     <h6>{faq.q}</h6>
-                                    <span className={style.icon}>+</span>
+                                    <span className={style.icon}></span>
                                 </button>
 
                                 <div className={style.answerWrapper}>

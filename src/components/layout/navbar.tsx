@@ -37,8 +37,8 @@ export default function Navbar() {
                         <button className="pri-button">
                             Login
                             <span className="icon-wrapper">
-                                <img src="/icons/arrow.svg" className="btn-icon icon1" />
-                                <img src="/icons/arrow.svg" className="btn-icon icon2" />
+                                <img src="/icons/arrow.svg" className="btn-icon icon1" style={{ filter: "invert(1)" }} />
+                                <img src="/icons/arrow.svg" className="btn-icon icon2" style={{ filter: "invert(1)" }} />
                             </span>
                         </button>
                     </div>

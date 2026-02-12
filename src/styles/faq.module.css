@@ -223,6 +223,19 @@
 /* --- RESPONSIVE --- */
 
 @media (max-width: 768px) {
+
+    .sidebar {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .catLink {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 430px) {
+
     .contentWrapper {
         flex-direction: column;
     }
@@ -234,15 +247,14 @@
 
     .stickyNav {
         position: relative;
+        flex-direction: row;
+        max-width: 100%;
+        padding: 16px;
+        gap: 32px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
         top: 0;
     }
-
-    .catLink {
-        white-space: nowrap;
-    }
-}
-
-@media (max-width: 430px) {
 
     .icon::before,
     .icon::after {

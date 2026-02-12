@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useLayoutEffect } from "react";
 import gsap from "gsap";
 import style from "@/src/styles/gole.module.css";
 import Image from "next/image";
@@ -138,61 +138,133 @@ interface SliderProps {
 }
 
 export function Slider({ images }: SliderProps) {
-    const [sliderImages, setSliderImages] = useState(images);
-    const middleIndex = Math.floor(sliderImages.length / 2);
+    const extendedSlides = [...images, ...images, ...images];
+
     const trackRef = useRef<HTMLDivElement>(null);
+    const activeIndex = useRef(images.length);
+    const isAnimating = useRef(false);
 
-    const handleClick = (index: number) => {
-        if (index === middleIndex) return;
+    const gap = 20;
+    const speed = 0.8;
 
-        const offset = index - middleIndex;
-        let newImages;
+    const updateSlides = (index: number) => {
+        if (!trackRef.current) return;
 
-        if (offset > 0) {
-            newImages = sliderImages.slice(offset).concat(sliderImages.slice(0, offset));
+        const slides = Array.from(
+            trackRef.current.children
+        ) as HTMLElement[];
+
+        slides.forEach((slide, i) => {
+            let scale = 0.85;
+            let opacity = 0.4;
+            let zIndex = 1;
+
+            if (i === index) {
+                scale = 1.1;
+                opacity = 1;
+                zIndex = 10;
+            } else if (i === index - 1 || i === index + 1) {
+                scale = 0.95;
+                opacity = 0.7;
+                zIndex = 5;
+            }
+
+            gsap.to(slide, {
+                scale,
+                opacity,
+                duration: 0.6,
+                ease: "power3.out",
+            });
+
+            slide.style.zIndex = zIndex.toString();
+        });
+    };
+
+    const moveToIndex = (index: number, immediate = false) => {
+        if (!trackRef.current) return;
+
+        const slide = trackRef.current.children[0] as HTMLElement;
+        const slideWidth = slide.offsetWidth;
+
+        const totalMove = index * (slideWidth + gap);
+        const centerOffset = (window.innerWidth - slideWidth) / 2;
+        const xValue = -totalMove + centerOffset;
+
+        updateSlides(index);
+
+        if (immediate) {
+            gsap.set(trackRef.current, { x: xValue });
         } else {
-            newImages = sliderImages
-                .slice(offset + sliderImages.length)
-                .concat(sliderImages.slice(0, offset + sliderImages.length));
-        }
+            if (isAnimating.current) return;
+            isAnimating.current = true;
 
-        if (trackRef.current) {
-            // Animate out
             gsap.to(trackRef.current, {
-                x: -offset * 300, // Approximate movement
-                opacity: 0.5,
-                duration: 0.3,
+                x: xValue,
+                duration: speed,
+                ease: "power3.out",
                 onComplete: () => {
-                    // Swap images and reset position instantly
-                    setSliderImages(newImages);
-                    gsap.set(trackRef.current, { x: 0, opacity: 1 });
+                    isAnimating.current = false;
+
+                    // Seamless reset
+                    if (index >= images.length * 2) {
+                        activeIndex.current = index - images.length;
+                        moveToIndex(activeIndex.current, true);
+                    }
+
+                    if (index < images.length) {
+                        activeIndex.current = index + images.length;
+                        moveToIndex(activeIndex.current, true);
+                    }
                 },
             });
         }
     };
 
+    // Initialize
+    useEffect(() => {
+        moveToIndex(activeIndex.current, true);
+
+        const interval = setInterval(() => {
+            activeIndex.current += 1;
+            moveToIndex(activeIndex.current);
+        }, 4000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Resize fix
+    useEffect(() => {
+        const handleResize = () =>
+            moveToIndex(activeIndex.current, true);
+
+        window.addEventListener("resize", handleResize);
+        return () =>
+            window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
         <div className={style.sliderWrapper}>
             <div className={style.sliderTrack} ref={trackRef}>
-                {sliderImages.map((img, i) => {
-                    let className = style.slide;
-                    if (i === middleIndex) className += ` ${style.active}`;
-                    else className += ` ${style.inactive}`;
-
-                    if (i === middleIndex) className += ` ${style.active}`;
-                    else if (i === middleIndex - 1 || i === middleIndex + 1) className += ` ${style.near}`;
-                    else className += ` ${style.far}`;
-
-                    return (
-                        <div
-                            key={`${img}-${i}`} // Unique key to force re-render on shuffle
-                            className={className}
-                            onClick={() => handleClick(i)}
-                        >
-                            <Image src={img} fill alt="slide" />
+                {extendedSlides.map((img, i) => (
+                    <div
+                        key={`${img}-${i}`}
+                        className={style.slide}
+                        onClick={() => {
+                            activeIndex.current = i;
+                            moveToIndex(i);
+                        }}
+                    >
+                        <div className={style.imageContainer}>
+                            <Image
+                                src={img}
+                                fill
+                                alt="Mentor"
+                                sizes="350px"
+                                draggable={false}
+                            />
                         </div>
-                    );
-                })}
+                    </div>
+                ))}
             </div>
         </div>
     );

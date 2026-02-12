@@ -24,10 +24,12 @@
     font-size: clamp(28px, 5vw, 52px);
     line-height: 1.2;
     margin-bottom: 16px;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .herotext span {
+    font-family: "Fraunces";
+    font-style: italic;
     background: linear-gradient(90deg, var(--liner1), var(--liner2), var(--liner3));
     background-clip: text;
     -webkit-background-clip: text;

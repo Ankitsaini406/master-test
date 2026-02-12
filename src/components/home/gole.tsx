@@ -4,7 +4,12 @@ import { useState, useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 import style from "@/src/styles/gole.module.css";
 import Image from "next/image";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReveal } from "@/src/hook/useReveal";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger)
+}
 
 export default function GoleMentors() {
     const Images = [
@@ -31,6 +36,25 @@ export default function GoleMentors() {
                     repeat: -1,
                     duration: 40, // Adjusted speed
                     ease: "none",
+                });
+
+                gsap.utils.toArray<HTMLElement>(".count").forEach((el) => {
+                    const target = Number(el.dataset.target);
+
+                    gsap.fromTo(
+                        el,
+                        { innerText: 0 },
+                        {
+                            innerText: target,
+                            duration: 2,
+                            ease: "power2.out",
+                            snap: { innerText: 1 },
+                            scrollTrigger: {
+                                trigger: containerRef.current,
+                                start: "top 80%",
+                            },
+                        }
+                    );
                 });
             }
         }, containerRef);
@@ -67,19 +91,27 @@ export default function GoleMentors() {
                         <p>no middle layers</p>
                     </div>
                     <div className={style.gridItem}>
-                        <h3>94%</h3>
+                        <h3>
+                            <span className="count" data-target="94">0</span>%
+                        </h3>
                         <p>mentors found unmatched clarity</p>
                     </div>
                     <div className={style.gridItem}>
-                        <h3>650+</h3>
+                        <h3>
+                            <span className="count" data-target="650">0</span>+
+                        </h3>
                         <p>mentors, one platform</p>
                     </div>
                     <div className={style.gridItem}>
-                        <h3>3 Calls</h3>
+                        <h3>
+                            <span className="count" data-target="3">0</span> Calls
+                        </h3>
                         <p>result in one breakthrough</p>
                     </div>
                     <div className={style.gridItem}>
-                        <h3>14,000+</h3>
+                        <h3>
+                            <span className="count" data-target="14000">0</span>+
+                        </h3>
                         <p>completed calls</p>
                     </div>
                 </div>

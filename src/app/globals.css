@@ -1,3 +1,13 @@
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+
 :root {
   /* Colors - Light Theme */
   --background: #ffffff;
@@ -159,9 +169,4 @@ button {
 .reveal.show {
   opacity: 1;
   transform: translateY(0);
-}
-
-.line {
-  display: block;
-  overflow: hidden;
 }

@@ -73,7 +73,7 @@ export default function Hero() {
                 <div className="container">
                     <h1 className={`${styles.herotext} reveal`}>
                         Unlock Your Potential <br />
-                        with <span><em>1:1</em> Mentorship</span>
+                        with <span>1:1 Mentorship</span>
                     </h1>
 
                     <p className={`${styles.description} reveal`}>

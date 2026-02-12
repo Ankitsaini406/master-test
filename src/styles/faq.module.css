@@ -243,9 +243,10 @@
 }
 
 @media (max-width: 430px) {
+
     .icon::before,
-.icon::after {
-    width: 12px;
-    height: 1.5px;
-}
+    .icon::after {
+        width: 12px;
+        height: 1.5px;
+    }
 }

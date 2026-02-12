@@ -10,8 +10,8 @@ if (typeof window !== "undefined") {
 }
 
 export default function MentorShip() {
-    const sectionRef = useRef<HTMLDivElement>(null) // NEW: Section ref
-    const laptopRef = useRef<HTMLDivElement>(null)  // NEW: Laptop wrapper ref
+    const sectionRef = useRef<HTMLDivElement>(null)
+    const laptopRef = useRef<HTMLDivElement>(null)
     const videoRef = useRef<HTMLVideoElement>(null)
     const lidRef = useRef<HTMLDivElement>(null)
     const [isPlaying, setIsPlaying] = useState(false)
@@ -20,21 +20,17 @@ export default function MentorShip() {
         const ctx = gsap.context(() => {
             if (!lidRef.current || !laptopRef.current) return
 
-            // 1. Set the initial "Closed" state
-            // Rotate -90 degrees so it's flat against the base
             gsap.set(lidRef.current, {
                 rotateX: -90,
                 transformOrigin: "bottom center",
             })
 
-            // 2. Create the Opening Animation
             const tl = gsap.timeline({
                 scrollTrigger: {
-                    trigger: laptopRef.current, // Use the STATIC wrapper as trigger
-                    start: "top 85%",           // Start when the laptop enters view
-                    end: "top 30%",            // End when it's further up
-                    scrub: 1,                   // Smooth scrubbing
-                    // markers: true,           // Uncomment this to debug!
+                    trigger: laptopRef.current,
+                    start: "top 85%",
+                    end: "top 30%",
+                    scrub: 1
                 }
             })
 
@@ -43,7 +39,6 @@ export default function MentorShip() {
                 ease: "power2.out"
             })
 
-            // 3. Play video when it reaches a certain point
             ScrollTrigger.create({
                 trigger: laptopRef.current,
                 start: "top 50%",
@@ -51,14 +46,13 @@ export default function MentorShip() {
                     videoRef.current?.play()
                     setIsPlaying(true)
                 },
-                // Optional: Pause when scrolling back up
                 onLeaveBack: () => {
                     videoRef.current?.pause()
                     setIsPlaying(false)
                 }
             })
 
-        }, sectionRef) // Scope to section
+        }, sectionRef)
 
         return () => ctx.revert()
     }, [])

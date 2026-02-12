@@ -39,14 +39,12 @@ html {
 /* Remove default margin and padding */
 html,
 body {
-  height: 100%;
   max-width: 100vw;
   overflow-x: hidden;
 }
 
 /* Set core body defaults */
 body {
-  min-height: 100vh;
   color: var(--foreground);
   background: var(--background);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,

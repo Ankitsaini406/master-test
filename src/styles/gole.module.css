@@ -122,7 +122,6 @@
 
 .sliderWrapper {
     width: 100%;
-    /* padding: 100px 0; */
     position: relative;
     background-color: transparent;
 }
@@ -131,23 +130,12 @@
     display: flex;
     align-items: center;
     gap: 20px; /* Space between slides */
-    will-change: transform;
     cursor: grab;
-    transform: translateZ(0);
 }
 
 .slide {
     flex: 0 0 350px; /* Fixed width for consistent loop math */
-    height: 500px;
     position: relative;
-    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), 
-                opacity 0.8s cubic-bezier(0.2, 1, 0.3, 1);
-    opacity: 0.4;
-    transform: scale(0.85) translateZ(0);
-    cursor: pointer;
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-    will-change: transform, opacity;
 }
 
 .imageContainer {
@@ -157,12 +145,30 @@
     /* YOUR REQUESTED STYLES */
     border: 18px solid #000;
     background: #000;
-    overflow: hidden;
     box-sizing: border-box;
 }
 
 .slide img {
-    object-fit: cover; /* Ensures full image coverage */
+    object-fit: cover;
+}
+
+/* default state */
+.slide .imageContainer img {
+    transform: scale(0.95);
+    opacity: 0.6;
+}
+
+/* center image */
+.active .imageContainer img {
+    transform: scale(1.2);
+    border: 18px solid #000;
+    opacity: 1;
+}
+
+/* near images */
+.near .imageContainer img {
+        transform: scale(1);
+    opacity: 0.8;
 }
 
 /* =========================

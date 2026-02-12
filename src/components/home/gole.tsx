@@ -147,36 +147,23 @@ export function Slider({ images }: SliderProps) {
     const gap = 20;
     const speed = 0.8;
 
-    const updateSlides = (index: number) => {
+    // Update active / near classes
+    const updateClasses = (index: number) => {
         if (!trackRef.current) return;
 
-        const slides = Array.from(
-            trackRef.current.children
-        ) as HTMLElement[];
+        const slides = Array.from(trackRef.current.children);
 
         slides.forEach((slide, i) => {
-            let scale = 0.85;
-            let opacity = 0.4;
-            let zIndex = 1;
+            slide.classList.remove(
+                style.active,
+                style.near
+            );
 
             if (i === index) {
-                scale = 1.1;
-                opacity = 1;
-                zIndex = 10;
+                slide.classList.add(style.active);
             } else if (i === index - 1 || i === index + 1) {
-                scale = 0.95;
-                opacity = 0.7;
-                zIndex = 5;
+                slide.classList.add(style.near);
             }
-
-            gsap.to(slide, {
-                scale,
-                opacity,
-                duration: 0.6,
-                ease: "power3.out",
-            });
-
-            slide.style.zIndex = zIndex.toString();
         });
     };
 
@@ -188,39 +175,40 @@ export function Slider({ images }: SliderProps) {
 
         const totalMove = index * (slideWidth + gap);
         const centerOffset = (window.innerWidth - slideWidth) / 2;
-        const xValue = -totalMove + centerOffset;
+        const xValue = Math.round(-totalMove + centerOffset); // ⚠️ rounded to prevent subpixel flicker
 
-        updateSlides(index);
+        updateClasses(index);
 
         if (immediate) {
             gsap.set(trackRef.current, { x: xValue });
-        } else {
-            if (isAnimating.current) return;
-            isAnimating.current = true;
-
-            gsap.to(trackRef.current, {
-                x: xValue,
-                duration: speed,
-                ease: "power3.out",
-                onComplete: () => {
-                    isAnimating.current = false;
-
-                    // Seamless reset
-                    if (index >= images.length * 2) {
-                        activeIndex.current = index - images.length;
-                        moveToIndex(activeIndex.current, true);
-                    }
-
-                    if (index < images.length) {
-                        activeIndex.current = index + images.length;
-                        moveToIndex(activeIndex.current, true);
-                    }
-                },
-            });
+            return;
         }
+
+        if (isAnimating.current) return;
+        isAnimating.current = true;
+
+        gsap.to(trackRef.current, {
+            x: xValue,
+            duration: speed,
+            ease: "power3.out",
+            onComplete: () => {
+                isAnimating.current = false;
+
+                // Seamless infinite reset
+                if (index >= images.length * 2) {
+                    activeIndex.current = index - images.length;
+                    moveToIndex(activeIndex.current, true);
+                }
+
+                if (index < images.length) {
+                    activeIndex.current = index + images.length;
+                    moveToIndex(activeIndex.current, true);
+                }
+            },
+        });
     };
 
-    // Initialize
+    // Initial mount + autoplay
     useEffect(() => {
         moveToIndex(activeIndex.current, true);
 
@@ -232,7 +220,7 @@ export function Slider({ images }: SliderProps) {
         return () => clearInterval(interval);
     }, []);
 
-    // Resize fix
+    // Resize handling
     useEffect(() => {
         const handleResize = () =>
             moveToIndex(activeIndex.current, true);
@@ -257,10 +245,15 @@ export function Slider({ images }: SliderProps) {
                         <div className={style.imageContainer}>
                             <Image
                                 src={img}
-                                fill
-                                alt="Mentor"
-                                sizes="350px"
+                                alt="Slide"
+                                width={350}
+                                height={500}
                                 draggable={false}
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                }}
                             />
                         </div>
                     </div>

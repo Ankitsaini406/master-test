@@ -3,6 +3,7 @@
 import Image from "next/image";
 import styles from "@/src/styles/hero.module.css";
 import { useReveal } from "@/src/hook/useReveal";
+import Button from "../ui/Button";
 
 export default function Hero() {
     useReveal();
@@ -80,13 +81,9 @@ export default function Hero() {
                         Get <b>real-world insights</b> and career guidance from 650+ seasoned industry experts
                     </p>
 
-                    <button className="sec-button reveal">
+                    <Button variant="secondary" onClick={() => {}}>
                         Browse Mentors
-                        <span className="icon-wrapper">
-                            <Image alt="arrow" fill src="/icons/arrow.svg" className="btn-icon icon1" />
-                            <Image alt="arrow" fill src="/icons/arrow.svg" className="btn-icon icon2" />
-                        </span>
-                    </button>
+                    </Button>
                 </div>
             </div>
         </section>

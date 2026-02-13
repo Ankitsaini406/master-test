@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "@/src/styles/nav.module.css";
+import Button from "../ui/Button";
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
@@ -35,13 +36,9 @@ export default function Navbar() {
                         <Link href="/">For Institutions</Link>
                         <Link href="/">Become a Mentor</Link>
 
-                        <button className="pri-button">
+                        <Button variant="primary" onClick={() => {}}>
                             Login
-                            <span className="icon-wrapper">
-                                <Image fill alt="arrow" src="/icons/arrow.svg" className="btn-icon icon1" style={{ filter: "invert(1)" }} />
-                                <Image fill alt="arrow" src="/icons/arrow.svg" className="btn-icon icon2" style={{ filter: "invert(1)" }} />
-                            </span>
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Mobile Menu Button */}

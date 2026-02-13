@@ -139,25 +139,26 @@ interface SliderProps {
 
 export function Slider({ images }: SliderProps) {
     const extendedSlides = [...images, ...images, ...images];
-
     const trackRef = useRef<HTMLDivElement>(null);
-    const activeIndex = useRef(images.length);
+    const activeIndex = useRef(images.length + 2);
     const isAnimating = useRef(false);
 
-    const gap = 20;
     const speed = 0.8;
 
-    // Update active / near classes
+    // Helper to get visible slides count based on window width
+    const getVisibleSlides = () => {
+        if (typeof window === "undefined") return 5;
+        if (window.innerWidth < 768) return 1;
+        if (window.innerWidth < 1024) return 3;
+        return 5;
+    };
+
     const updateClasses = (index: number) => {
         if (!trackRef.current) return;
-
         const slides = Array.from(trackRef.current.children);
 
         slides.forEach((slide, i) => {
-            slide.classList.remove(
-                style.active,
-                style.near
-            );
+            slide.classList.remove(style.active, style.near);
 
             if (i === index) {
                 slide.classList.add(style.active);
@@ -170,64 +171,57 @@ export function Slider({ images }: SliderProps) {
     const moveToIndex = (index: number, immediate = false) => {
         if (!trackRef.current) return;
 
-        const slide = trackRef.current.children[0] as HTMLElement;
-        const slideWidth = slide.offsetWidth;
+        const visibleCount = getVisibleSlides();
+        const slideWidthPercent = 100 / visibleCount;
 
-        const totalMove = index * (slideWidth + gap);
-        const centerOffset = (window.innerWidth - slideWidth) / 2;
-        const xValue = Math.round(-totalMove + centerOffset); // ⚠️ rounded to prevent subpixel flicker
+        // Offset logic to keep the active index in the middle
+        const offset = (visibleCount - 1) / 2;
+        const xValue = -(index - offset) * slideWidthPercent;
 
         updateClasses(index);
 
         if (immediate) {
-            gsap.set(trackRef.current, { x: xValue });
-            return;
+            gsap.set(trackRef.current, { xPercent: xValue });
+        } else {
+            isAnimating.current = true;
+            gsap.to(trackRef.current, {
+                xPercent: xValue,
+                duration: speed,
+                ease: "power3.out",
+                onComplete: () => {
+                    isAnimating.current = false;
+
+                    // Seamless Loop Snap
+                    if (index >= images.length * 2) {
+                        activeIndex.current = index - images.length;
+                        moveToIndex(activeIndex.current, true);
+                    } else if (index < images.length) {
+                        activeIndex.current = index + images.length;
+                        moveToIndex(activeIndex.current, true);
+                    }
+                },
+            });
         }
-
-        if (isAnimating.current) return;
-        isAnimating.current = true;
-
-        gsap.to(trackRef.current, {
-            x: xValue,
-            duration: speed,
-            ease: "power3.out",
-            onComplete: () => {
-                isAnimating.current = false;
-
-                // Seamless infinite reset
-                if (index >= images.length * 2) {
-                    activeIndex.current = index - images.length;
-                    moveToIndex(activeIndex.current, true);
-                }
-
-                if (index < images.length) {
-                    activeIndex.current = index + images.length;
-                    moveToIndex(activeIndex.current, true);
-                }
-            },
-        });
     };
 
-    // Initial mount + autoplay
     useEffect(() => {
         moveToIndex(activeIndex.current, true);
 
         const interval = setInterval(() => {
-            activeIndex.current += 1;
-            moveToIndex(activeIndex.current);
+            if (!isAnimating.current) {
+                activeIndex.current += 1;
+                moveToIndex(activeIndex.current);
+            }
         }, 4000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [images.length]);
 
-    // Resize handling
+    // Handle Resize for Responsive logic
     useEffect(() => {
-        const handleResize = () =>
-            moveToIndex(activeIndex.current, true);
-
+        const handleResize = () => moveToIndex(activeIndex.current, true);
         window.addEventListener("resize", handleResize);
-        return () =>
-            window.removeEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     return (
@@ -235,9 +229,10 @@ export function Slider({ images }: SliderProps) {
             <div className={style.sliderTrack} ref={trackRef}>
                 {extendedSlides.map((img, i) => (
                     <div
-                        key={`${img}-${i}`}
+                        key={i}
                         className={style.slide}
                         onClick={() => {
+                            if (isAnimating.current) return;
                             activeIndex.current = i;
                             moveToIndex(i);
                         }}
@@ -245,15 +240,11 @@ export function Slider({ images }: SliderProps) {
                         <div className={style.imageContainer}>
                             <Image
                                 src={img}
-                                alt="Slide"
-                                width={350}
-                                height={500}
+                                alt={`Mentor ${i}`}
+                                fill
+                                // sizes="(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 20vw"
                                 draggable={false}
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                }}
+                                priority={i >= 5 && i < 10}
                             />
                         </div>
                     </div>

@@ -43,7 +43,7 @@ export default function Hero() {
                                 className={styles.planet}
                                 style={{ "--angle": `${i * 60}deg` } as React.CSSProperties}
                             >
-                                <img src={img} alt="mentor" />
+                                <Image fill src={img} alt="mentor" />
                             </div>
                         ))}
                     </div>

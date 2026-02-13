@@ -212,7 +212,7 @@ export function Slider({ images }: SliderProps) {
                 activeIndex.current += 1;
                 moveToIndex(activeIndex.current);
             }
-        }, 4000);
+        }, 3000);
 
         return () => clearInterval(interval);
     }, [images.length]);

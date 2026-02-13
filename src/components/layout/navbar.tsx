@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "@/src/styles/nav.module.css";
 
 export default function Navbar() {
@@ -37,8 +38,8 @@ export default function Navbar() {
                         <button className="pri-button">
                             Login
                             <span className="icon-wrapper">
-                                <img src="/icons/arrow.svg" className="btn-icon icon1" style={{ filter: "invert(1)" }} />
-                                <img src="/icons/arrow.svg" className="btn-icon icon2" style={{ filter: "invert(1)" }} />
+                                <Image fill alt="arrow" src="/icons/arrow.svg" className="btn-icon icon1" style={{ filter: "invert(1)" }} />
+                                <Image fill alt="arrow" src="/icons/arrow.svg" className="btn-icon icon2" style={{ filter: "invert(1)" }} />
                             </span>
                         </button>
                     </div>

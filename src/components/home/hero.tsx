@@ -83,8 +83,8 @@ export default function Hero() {
                     <button className="sec-button reveal">
                         Browse Mentors
                         <span className="icon-wrapper">
-                            <img src="/icons/arrow.svg" className="btn-icon icon1" />
-                            <img src="/icons/arrow.svg" className="btn-icon icon2" />
+                            <Image alt="arrow" fill src="/icons/arrow.svg" className="btn-icon icon1" />
+                            <Image alt="arrow" fill src="/icons/arrow.svg" className="btn-icon icon2" />
                         </span>
                     </button>
                 </div>

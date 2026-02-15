@@ -245,10 +245,6 @@
         max-width: 33.333%;
     }
 
-    .sliderWrapper {
-        overflow: visible;
-    }
-
     .imageContainer {
         height: 300px;
     }
@@ -264,7 +260,12 @@
         justify-content: center;
     }
 
+        .slide {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
     .imageContainer {
-        height: 400px;
+        height: 500px;
     }
 }
